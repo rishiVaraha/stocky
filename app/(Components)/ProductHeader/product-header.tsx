@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductsTable } from "../ProductsTable/product-table";
+import { ProductsTable } from "../ProductsFilter/product-filter";
 
 export function DataTable() {
   return (
