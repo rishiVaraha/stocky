@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductsTable } from "../ProductsFilter/product-filter";
+import { ProductTable } from "../ProductTable/data-table";
+import { columns } from "../ProductTable/columns";
+import { productData } from "../ProductTable/ProductData";
 
 export function DataTable() {
   return (
@@ -15,7 +17,7 @@ export function DataTable() {
         </div>
       </CardHeader>
       <CardContent>
-        <ProductsTable />
+        <ProductTable data={productData} columns={columns} />
       </CardContent>
     </Card>
   );
