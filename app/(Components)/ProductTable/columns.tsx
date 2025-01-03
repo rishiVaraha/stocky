@@ -4,6 +4,7 @@ import { IconType } from "react-icons/lib";
 import { ColumnDef } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { FaCheck, FaInbox } from "react-icons/fa";
+import { ProductDropdown } from "./product-dropdown";
 export type Product = {
   id: number;
   name: string;
@@ -86,7 +87,7 @@ export const columns: ColumnDef<Product>[] = [
       }
       return (
         <span
-          className={`px-3 py-0.5 rounded-full font-medium flex items-center w-fit ${colorClass}`}
+          className={`px-3 py-0.5 rounded-full font-medium flex items-center gap-1 w-fit ${colorClass}`}
         >
           {icon}
           <span className="text-xs">{status}</span>
@@ -101,5 +102,11 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "supplier",
     header: "Supplier",
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return <ProductDropdown row={row} />;
+    },
   },
 ];

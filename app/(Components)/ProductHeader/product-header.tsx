@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "../ProductTable/data-table";
 import { columns } from "../ProductTable/columns";
 import { productData } from "../ProductTable/ProductData";
+import { ProductsFilter } from "../ProductsFilter/product-filter";
 
 export function DataTable() {
   return (
@@ -17,6 +18,7 @@ export function DataTable() {
         </div>
       </CardHeader>
       <CardContent>
+        <ProductsFilter />
         <ProductTable data={productData} columns={columns} />
       </CardContent>
     </Card>

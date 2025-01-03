@@ -6,7 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { StatusDropDown } from "../dropdowns/StatusDropDown";
 import { ComboboxDemo } from "../dropdowns/CategoryDropdown";
 
-export function ProductsTable() {
+export function ProductsFilter() {
   return (
     <div>
       <div className="flex flex-col gap-3 mb-8 mt-6">
