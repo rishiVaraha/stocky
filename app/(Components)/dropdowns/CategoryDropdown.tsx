@@ -1,10 +1,13 @@
 "use client";
-
-import * as React from "react";
-import { Check, LucideGitPullRequest } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { LucideGitPullRequest } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -12,12 +15,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 type Category = {
   value: string;
@@ -68,8 +66,7 @@ const categories: Category[] = [
 ];
 
 export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
