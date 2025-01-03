@@ -4,9 +4,13 @@ import { Input } from "@/components/ui/input";
 import {
   ColumnDef,
   flexRender,
+  ColumnFiltersState,
   getCoreRowModel,
   getPaginationRowModel,
+  getFilteredRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 import { StatusDropDown } from "../dropdowns/StatusDropDown";
 import { ComboboxDemo } from "../dropdowns/CategoryDropdown";
@@ -44,12 +48,21 @@ export function ProductTable<TData, TValue>({
     pageIndex: 1,
     pageSize: 8,
   });
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
     columns,
     state: {
       pagination,
+      columnFilters,
+      sorting,
     },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -59,7 +72,14 @@ export function ProductTable<TData, TValue>({
     <div>
       <div className="flex flex-col gap-3 mb-8 mt-6">
         <div className="flex items-center justify-between">
-          <Input placeholder="Search by name..." className="max-w-sm h-10" />
+          <Input
+            placeholder="Filter emails..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
           <div className="flex items-center gap-4">
             <StatusDropDown />
             <ComboboxDemo />
