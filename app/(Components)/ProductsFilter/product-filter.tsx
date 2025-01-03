@@ -1,32 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { IoClose } from "react-icons/io5";
-import { StatusDropDown } from "../dropdowns/StatusDropDown";
-import { ComboboxDemo } from "../dropdowns/CategoryDropdown";
 
-export function ProductsFilter() {
-  return (
-    <div>
-      <div className="flex flex-col gap-3 mb-8 mt-6">
-        <div className="flex items-center justify-between">
-          <Input placeholder="Search by name" className="max-w-sm h-10" />
-          <div className="flex items-center gap-4">
-            <StatusDropDown />
-            <ComboboxDemo />
-          </div>
-        </div>
-        {/* filter area */}
-        <FilterArea />
-      </div>
-      {/* Upcoming table */}
-      <div></div>
-    </div>
-  );
-}
-
-function FilterArea() {
+export function FilterArea() {
   return (
     <div className="flex gap-3">
       {/* status */}

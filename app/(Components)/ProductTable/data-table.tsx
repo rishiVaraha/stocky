@@ -18,6 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { FilterArea } from "../ProductsFilter/product-filter";
+
 interface ProductTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -44,6 +46,7 @@ export function ProductTable<TData, TValue>({
           </div>
         </div>
         {/* filter area */}
+        <FilterArea />
       </div>
       {/* Upcoming table */}
       <div className="rounded-md border">
