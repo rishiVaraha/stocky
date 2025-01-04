@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { StatusDropDown } from "../dropdowns/StatusDropDown";
-import { ComboboxDemo } from "../dropdowns/CategoryDropdown";
+import { CategoriesDropDown } from "../dropdowns/CategoryDropdown";
 import {
   Table,
   TableBody,
@@ -71,25 +71,35 @@ export function ProductTable<TData, TValue>({
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log("Selected Statuses Changes:", selectedStatuses);
-
     setColumnFilters((prev) => {
-      const filtersWithoutStatus = prev.filter(
-        (filter) => filter.id !== "status"
+      const baseFilters = prev.filter(
+        (filter) => filter.id !== "status" && filter.id !== "category"
       );
 
-      const newFilters =
-        selectedStatuses.length > 0
-          ? [...filtersWithoutStatus, { id: "status", value: selectedStatuses }]
-          : filtersWithoutStatus;
+      const newFilters = [...baseFilters];
 
-      console.log("New Column Filters:", newFilters);
+      if (selectedStatuses.length > 0) {
+        newFilters.push({
+          id: "status",
+          value: selectedStatuses,
+        });
+      }
+
+      if (selectedCategories.length > 0) {
+        newFilters.push({
+          id: "category",
+          value: selectedCategories,
+        });
+      }
+      console.log("New Colum Filters:", newFilters);
       return newFilters;
     });
-  }, [selectedStatuses]);
+  }, [selectedStatuses, selectedCategories]);
 
   const table = useReactTable({
     data,
@@ -128,11 +138,19 @@ export function ProductTable<TData, TValue>({
               selectedStatuses={selectedStatuses}
               setSelectedStatuses={setSelectedStatuses}
             />
-            <ComboboxDemo />
+            <CategoriesDropDown
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+            />
           </div>
         </div>
         {/* filter area */}
-        <FilterArea />
+        <FilterArea
+          selectedStatuses={selectedStatuses}
+          setSelectedStatuses={setSelectedStatuses}
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+        />
       </div>
       {/* Upcoming table */}
       <div className="rounded-md border">

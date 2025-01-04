@@ -16,10 +16,16 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 type Category = {
   value: string;
   label: string;
+};
+
+type CategoriesDropDownProps = {
+  selectedCategories: string[];
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 const categories: Category[] = [
@@ -65,8 +71,30 @@ const categories: Category[] = [
   },
 ];
 
-export function ComboboxDemo() {
+export function CategoriesDropDown({
+  selectedCategories,
+  setSelectedCategories,
+}: CategoriesDropDownProps) {
   const [open, setOpen] = useState(false);
+
+  console.log("Selected categories:", selectedCategories);
+
+  function handleCheckboxChange(value: string) {
+    console.log("Handling change for category:", value);
+
+    setSelectedCategories((prev) => {
+      const updatedCategories = prev.includes(value)
+        ? prev.filter((category) => category !== value)
+        : [...prev, value];
+
+      console.log("Updated Categories:", updatedCategories);
+      return updatedCategories;
+    });
+  }
+
+  function clearFilters() {
+    setSelectedCategories([]);
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -83,7 +111,11 @@ export function ComboboxDemo() {
             <CommandGroup>
               {categories.map((category) => (
                 <CommandItem key={category.value} value={category.value}>
-                  <Checkbox className="size-4 rounded-sm" />
+                  <Checkbox
+                    checked={selectedCategories.includes(category.value)}
+                    onClick={() => handleCheckboxChange(category.value)}
+                    className="size-4 rounded-sm"
+                  />
                   <div className="flex items-center gap-1 p-1 rounded-lg px-3 text-sm">
                     {category.label}
                   </div>
@@ -91,6 +123,16 @@ export function ComboboxDemo() {
               ))}
             </CommandGroup>
           </CommandList>
+          <div className="flex flex-col gap-2 text-2xl">
+            <Separator />
+            <Button
+              variant="secondary"
+              className="text-xs mb-1"
+              onClick={clearFilters}
+            >
+              Clear Filter
+            </Button>
+          </div>
         </Command>
       </PopoverContent>
     </Popover>
