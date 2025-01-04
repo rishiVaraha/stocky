@@ -10,6 +10,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { Status } from "./_components/status";
+import { ProductCategory } from "./_components/product-category";
 
 export function ProductDialog() {
   return (
