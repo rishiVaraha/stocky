@@ -12,6 +12,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Status } from "./_components/status";
 import { ProductCategory } from "./_components/product-category";
+import { SKU } from "./_components/sku";
+import { Supplier } from "./_components/supplier";
+import { Quantity } from "./_components/quantity";
+import { Price } from "./_components/price";
+import { ProductName } from "./_components/product-name";
 
 export function ProductDialog() {
   return (

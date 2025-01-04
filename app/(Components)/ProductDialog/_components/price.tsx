@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { MdError } from "react-icons/md";
 import { NumericFormat } from "react-number-format";
 
-export function Supplier() {
+export function Price() {
   return (
     <div className="mt-5 flex flex-col gap-2">
       <Label htmlFor="price" className="text-slate-600">
