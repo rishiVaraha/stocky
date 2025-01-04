@@ -21,10 +21,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  FilterFn,
 } from "@/components/ui/table";
 
 import { FilterArea } from "../ProductsFilter/product-filter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BiFirstPage, BiLastPage } from "react-icons/bi";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
@@ -40,17 +41,56 @@ export interface PaginationType {
   pageSize: number;
 }
 
+// * Define the custom Filter Function
+declare module "@tanstack/table-core" {
+  interface FilterFns {
+    multiSelect: FilterFn<unknown>;
+  }
+}
+
+const multiSelectFilter: FilterFn<unknown> = (
+  row,
+  columnId,
+  filterValue: string[]
+) => {
+  const rowValue = (row.getValue(columnId) as string).toLowerCase();
+  const lowercaseFilterValues = filterValue.map((val) => val.toLowerCase());
+  return filterValue.length === 0 || lowercaseFilterValues.includes(rowValue);
+};
+
+console.log("multiSelectFilter", multiSelectFilter);
+
 export function ProductTable<TData, TValue>({
   columns,
   data,
 }: ProductTableProps<TData, TValue>) {
   const [pagination, setPagination] = useState<PaginationType>({
-    pageIndex: 1,
+    pageIndex: 0,
     pageSize: 8,
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+
+  useEffect(() => {
+    console.log("Selected Statuses Changes:", selectedStatuses);
+
+    setColumnFilters((prev) => {
+      const filtersWithoutStatus = prev.filter(
+        (filter) => filter.id !== "status"
+      );
+
+      const newFilters =
+        selectedStatuses.length > 0
+          ? [...filtersWithoutStatus, { id: "status", value: selectedStatuses }]
+          : filtersWithoutStatus;
+
+      console.log("New Column Filters:", newFilters);
+      return newFilters;
+    });
+  }, [selectedStatuses]);
+
   const table = useReactTable({
     data,
     columns,
@@ -58,6 +98,9 @@ export function ProductTable<TData, TValue>({
       pagination,
       columnFilters,
       sorting,
+    },
+    filterFns: {
+      multiSelect: multiSelectFilter,
     },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -81,7 +124,10 @@ export function ProductTable<TData, TValue>({
             className="max-w-sm"
           />
           <div className="flex items-center gap-4">
-            <StatusDropDown />
+            <StatusDropDown
+              selectedStatuses={selectedStatuses}
+              setSelectedStatuses={setSelectedStatuses}
+            />
             <ComboboxDemo />
           </div>
         </div>

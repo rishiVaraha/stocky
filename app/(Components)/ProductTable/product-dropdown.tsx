@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 
 export function ProductDropdown({ row }: { row: Row<Product> }) {
-  console.log(row);
+  // console.log(row);
 
   const menuItems = [
     {

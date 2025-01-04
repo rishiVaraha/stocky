@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 
 import { LucideGitPullRequestDraft } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaCheck, FaInbox } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
@@ -29,7 +29,15 @@ const statuses: Status[] = [
   { value: "inactive", lable: "Inactive", icon: <IoClose /> },
 ];
 
-export function StatusDropDown() {
+type StatusDropDownProps = {
+  selectedStatuses: string[];
+  setSelectedStatuses: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export function StatusDropDown({
+  selectedStatuses,
+  setSelectedStatuses,
+}: StatusDropDownProps) {
   const [open, setOpen] = useState(false);
 
   function returnColor(status: string) {
@@ -41,9 +49,24 @@ export function StatusDropDown() {
       case "inactive":
         return "text-red-500 bg-red-100";
       default:
-        break;
+        return "";
     }
   }
+
+  function handleCheckboxChange(value: string) {
+    setSelectedStatuses((prev) => {
+      const updatedStatuses = prev.includes(value)
+        ? prev.filter((status) => status !== value)
+        : [...prev, value];
+
+      return updatedStatuses;
+    });
+  }
+
+  function clearFilters() {
+    setSelectedStatuses([]);
+  }
+
   return (
     <div className="flex items-center space-x-4">
       <Popover open={open} onOpenChange={setOpen}>
@@ -60,10 +83,15 @@ export function StatusDropDown() {
                 {statuses.map((status) => (
                   <CommandItem
                     key={status.value}
-                    className="h-10 mb-2"
+                    className="h-10 mb-2 flex items-center"
                     value={status.value}
+                    onClick={() => handleCheckboxChange(status.value)}
                   >
-                    <Checkbox className="size-4 rounded-sm" />
+                    <Checkbox
+                      checked={selectedStatuses.includes(status.value)}
+                      onCheckedChange={() => handleCheckboxChange(status.value)}
+                      className="size-4 rounded-sm"
+                    />
                     <div
                       className={`flex items-center gap-1 ${returnColor(
                         status.value
@@ -78,7 +106,11 @@ export function StatusDropDown() {
             </CommandList>
             <div className="flex flex-col gap-2 text-2xl">
               <Separator />
-              <Button variant="secondary" className="text-xs mb-1">
+              <Button
+                variant="secondary"
+                className="text-xs mb-1"
+                onClick={clearFilters}
+              >
                 Clear
               </Button>
             </div>
