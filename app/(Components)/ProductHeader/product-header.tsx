@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "../ProductTable/data-table";
 import { columns } from "../ProductTable/columns";
 import { useProductStore } from "@/store/useProductStore";
 import { useEffect } from "react";
+import { ProductDialog } from "../ProductDialog/product-dialog";
 
 export function DataTable() {
   const { allProducts, loadProducts } = useProductStore();
@@ -13,6 +13,7 @@ export function DataTable() {
   useEffect(() => {
     loadProducts();
   }, []);
+
   return (
     <Card className="mt-12 flex flex-col shadow-none border-none">
       <CardHeader className="flex justify-between p-2">
@@ -21,7 +22,7 @@ export function DataTable() {
             <CardTitle className="font-bold text-[23px]">Products</CardTitle>
             <p className="text-sm text-slate-600">34 Products</p>
           </div>
-          <Button>Add Products</Button>
+          <ProductDialog />
         </div>
       </CardHeader>
       <CardContent>

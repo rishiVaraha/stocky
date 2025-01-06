@@ -20,6 +20,8 @@ import {
 } from "react";
 import { createContext, isValidElement } from "react";
 
+import { icons } from "./Icons";
+
 export type SingleIcon = {
   id: number;
   icon: React.ReactNode;
@@ -144,7 +146,7 @@ export function IconDialogBox() {
   function updateSelection(singleIconProp: SingleIcon) {
     setAllIcons((prevArray: SingleIcon[]) =>
       prevArray.map((singleIcon: SingleIcon) => {
-        if (singleIconProp.id === singleIcon.id) {
+        if (singleIcon.id === singleIconProp.id) {
           updateSelectedIcon(singleIcon.icon);
           updateOpenDialog(!openDialog);
           return { ...singleIcon, isSelected: true };
@@ -227,5 +229,7 @@ export function IconSelector({
         triggerIconSelection(iconToSelected);
       }
     }, [iconToSelected]);
+
+    return null;
   }
 }

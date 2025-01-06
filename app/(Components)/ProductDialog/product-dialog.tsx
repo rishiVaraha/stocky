@@ -82,7 +82,7 @@ export function ProductDialog() {
       <DialogTrigger asChild>
         <Button className="h-10">Add Product</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="text-2xl">Add Product</DialogTitle>
           <DialogDescription>
@@ -105,7 +105,7 @@ export function ProductDialog() {
                   setSelectedCategory={setSelectedCategory}
                 />
               </div>
-              <div className="mt-3 grid grid-cols-3 gap-7 max-lg:grid-cols-2 max-lg-gap-2 max-lg:gap-1 max-sm:grid-cols-1">
+              <div className="grid grid-cols-3 gap-2 items-baseline">
                 <Status
                   selectedTab={selectedtab}
                   setSelectedTab={setSelectedtab}
@@ -114,22 +114,22 @@ export function ProductDialog() {
                 <Price />
               </div>
             </div>
+
+            <DialogFooter className="mt-9 mb-4 flex items-center gap-4">
+              <DialogClose
+                onClick={() => {
+                  handleReset();
+                }}
+                asChild
+              >
+                <Button asChild variant="secondary" className="h-11 px-11">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button className="h-11 px-11">Add Product</Button>
+            </DialogFooter>
           </form>
         </FormProvider>
-
-        <DialogFooter className="mt-9 mb-4 flex items-center gap-4">
-          <DialogClose
-            onClick={() => {
-              handleReset();
-            }}
-            asChild
-          >
-            <Button asChild variant="secondary" className="h-11 px-11">
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button className="h-11 px-11">Add Product</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
