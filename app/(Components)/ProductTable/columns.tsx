@@ -1,6 +1,5 @@
 "use client";
 
-import { IconType } from "react-icons/lib";
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { FaCheck, FaInbox } from "react-icons/fa";
@@ -17,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 export type Product = {
-  id: number;
+  id: string;
   name: string;
   supplier: string;
   sku: string;
@@ -36,7 +35,8 @@ export type Product = {
   status: "Published" | "Inactive" | "Draft";
   quantityInStock: number;
   price: number;
-  icon: IconType;
+  icon: ReactNode;
+  createdAt: Date;
 };
 
 type SortableHeaderProps = {
@@ -82,8 +82,8 @@ export const columns: ColumnDef<Product>[] = [
       const name = row.original.name;
       return (
         <div className="flex items-center space-x-2">
-          <div className="p-2 rounded-sm bg-primary/10">
-            <Icon className="text-lg text-primary" />
+          <div className="p-2 rounded-sm bg-primary/10 text-primary">
+            {Icon}
           </div>
           <span>{name}</span>
         </div>
@@ -96,6 +96,26 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "sku",
     header: ({ column }) => <SortableHeader column={column} lable="Sku" />,
   },
+
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <SortableHeader column={column} lable="Created At" />
+    ),
+    cell: ({ getValue }) => {
+      const date = getValue<Date>();
+      return (
+        <span>
+          {date.toLocaleDateString("en-IN", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
+      );
+    },
+  },
+
   {
     accessorKey: "price",
     header: ({ column }) => <SortableHeader column={column} lable="Price" />,

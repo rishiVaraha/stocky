@@ -15,6 +15,7 @@ import {
   ReactElement,
   ReactNode,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { createContext, isValidElement } from "react";
@@ -36,7 +37,7 @@ type IconContextType = {
 
 const IconContext = createContext<IconContextType | undefined>(undefined);
 
-export function IoconProvider({
+export function IconProvider({
   children,
   iconsArray,
   onUpdateIcon,
@@ -200,4 +201,31 @@ export function IconDialogBox() {
       </DialogContent>
     </Dialog>
   );
+}
+
+export function IconSelector({
+  onUpdateIcon,
+}: {
+  onUpdateIcon: (selectedIcon: ReactNode) => void;
+}) {
+  function updatedIcon(selectedIcon: ReactNode) {
+    onUpdateIcon(selectedIcon);
+    // const newTask = { name: "task", icon: convertIconToString(selectedIcon) };
+    // console.log(newTask);
+  }
+  return (
+    <IconProvider iconsArray={icons} onUpdateIcon={updatedIcon}>
+      <ParentComponent />
+    </IconProvider>
+  );
+
+  function ParentComponent({ iconToSelected }: { iconToSelected?: string }) {
+    const { triggerIconSelection } = useIconContext();
+
+    useEffect(() => {
+      if (iconToSelected) {
+        triggerIconSelection(iconToSelected);
+      }
+    }, [iconToSelected]);
+  }
 }

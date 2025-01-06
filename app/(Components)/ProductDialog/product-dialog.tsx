@@ -17,8 +17,66 @@ import { Supplier } from "./_components/supplier";
 import { Quantity } from "./_components/quantity";
 import { Price } from "./_components/price";
 import { ProductName } from "./_components/product-name";
+import { ReactNode, useState } from "react";
+import { Product } from "../ProductTable/columns";
+import { FormProvider, useForm } from "react-hook-form";
+import { ProductSchema } from "@/validation/formShema";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { nanoid } from "nanoid";
 
 export function ProductDialog() {
+  const methods = useForm<ProductFormData>({
+    resolver: zodResolver(ProductSchema),
+    defaultValues: {
+      productName: "",
+      sku: "",
+      supplier: "",
+      quantity: 0,
+      price: 0.0,
+    },
+  });
+
+  const { reset } = methods;
+
+  const [selectedtab, setSelectedtab] =
+    useState<Product["status"]>("Published");
+
+  const [selectedIcon, setSelectedIcon] = useState<null | ReactNode>(null);
+
+  const [selectedCategory, setSelectedCategory] =
+    useState<Product["category"]>("Electronics");
+
+  type ProductFormData = z.infer<typeof ProductSchema>;
+
+  const onSubmit = (data: ProductFormData) => {
+    console.log("Sumitted data:", data);
+    const newProduct: Product = {
+      id: nanoid(),
+      supplier: data.supplier,
+      name: data.productName,
+      price: data.price,
+      quantityInStock: data.quantity,
+      sku: data.sku,
+      status: selectedtab,
+      category: selectedCategory,
+      icon: selectedIcon,
+      createdAt: new Date(),
+    };
+    console.log(newProduct);
+  };
+
+  function handleReset() {
+    reset();
+  }
+
+  function onSelectedIcon(icon: ReactNode) {
+    console.log(icon);
+
+    setTimeout(() => {
+      setSelectedIcon(icon);
+    }, 0);
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -32,24 +90,40 @@ export function ProductDialog() {
           </DialogDescription>
         </DialogHeader>
         <Separator />
-        <div className="flex flex-col gap-2 mt-1">
-          <div className="grid grid-cols-2 gap-7">
-            <ProductName />
-            <SKU />
-          </div>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-2 mt-1">
+              <div className="grid grid-cols-2 gap-7">
+                <ProductName onSelectedIcon={onSelectedIcon} />
+                <SKU />
+              </div>
 
-          <div className="grid grid-cols-2 gap-5 items-center">
-            <Supplier />
-            <ProductCategory />
-          </div>
-          <div className="mt-3 grid grid-cols-3 gap-7 max-lg:grid-cols-2 max-lg-gap-2 max-lg:gap-1 max-sm:grid-cols-1">
-            <Status />
-            <Quantity />
-            <Price />
-          </div>
-        </div>
+              <div className="grid grid-cols-2 gap-5 items-center">
+                <Supplier />
+                <ProductCategory
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                />
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-7 max-lg:grid-cols-2 max-lg-gap-2 max-lg:gap-1 max-sm:grid-cols-1">
+                <Status
+                  selectedTab={selectedtab}
+                  setSelectedTab={setSelectedtab}
+                />
+                <Quantity />
+                <Price />
+              </div>
+            </div>
+          </form>
+        </FormProvider>
+
         <DialogFooter className="mt-9 mb-4 flex items-center gap-4">
-          <DialogClose>
+          <DialogClose
+            onClick={() => {
+              handleReset();
+            }}
+            asChild
+          >
             <Button asChild variant="secondary" className="h-11 px-11">
               Cancel
             </Button>
