@@ -46,9 +46,9 @@ export function DeleteDialog() {
         setOpenDialog(open);
       }}
     >
-      <AlertDialogTrigger asChild>
+      {/* <AlertDialogTrigger asChild>
         <Button variant="outline">Show Dialog</Button>
-      </AlertDialogTrigger>
+      </AlertDialogTrigger> */}
       <AlertDialogContent className="p-8">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

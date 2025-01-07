@@ -139,7 +139,7 @@ export function ProductDialog() {
                 }}
                 asChild
               >
-                <Button asChild variant="secondary" className="h-11 px-11">
+                <Button variant="secondary" className="h-11 px-11">
                   Cancel
                 </Button>
               </DialogClose>
