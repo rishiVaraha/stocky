@@ -20,7 +20,7 @@ export function DataTable() {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="font-bold text-[23px]">Products</CardTitle>
-            <p className="text-sm text-slate-600">34 Products</p>
+            <p className="text-sm text-slate-600">{allProducts.length}</p>
           </div>
           <ProductDialog />
         </div>

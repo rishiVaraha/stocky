@@ -230,6 +230,10 @@ export function IconSelector({
       }
     }, [iconToSelected]);
 
-    return null;
+    return (
+      <>
+        <IconDialogBox />
+      </>
+    );
   }
 }
