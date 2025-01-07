@@ -11,11 +11,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import { useProductStore } from "@/store/useProductStore";
+
+type MenuItem = {
+  icon: JSX.Element;
+  label: string;
+  className: string;
+  separator?: undefined;
+};
 
 export function ProductDropdown({ row }: { row: Row<Product> }) {
+  const { setSelectedProduct, setOpenDialog } = useProductStore();
   // console.log(row);
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
       icon: <MdContentCopy />,
       label: "Copy",
@@ -26,13 +35,18 @@ export function ProductDropdown({ row }: { row: Row<Product> }) {
       label: "Edit",
       className: "",
     },
-    { separator: true },
     {
       icon: <MdOutlineDelete className="text-lg" />,
       label: "Delete",
       className: "text-red-600",
     },
   ];
+  function handleClickedItem(item: MenuItem) {
+    if (item.label === "Delete") {
+      setOpenDialog(true);
+      setSelectedProduct(row.original);
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -52,6 +66,7 @@ export function ProductDropdown({ row }: { row: Row<Product> }) {
               <DropdownMenuItem
                 key={index}
                 className={`flex items-center gap-1 p-3 ${item.className}`}
+                onClick={() => handleClickedItem(item)}
               >
                 {item.icon}
                 <span>{item.label}</span>

@@ -17,13 +17,16 @@ import { Supplier } from "./_components/supplier";
 import { Quantity } from "./_components/quantity";
 import { Price } from "./_components/price";
 import { ProductName } from "./_components/product-name";
-import { ReactNode, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { Product } from "../ProductTable/columns";
 import { FormProvider, useForm } from "react-hook-form";
 import { ProductSchema } from "@/validation/formShema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { nanoid } from "nanoid";
+import { useProductStore } from "@/store/useProductStore";
+import { useToast } from "@/hooks/use-toast";
+import { icons } from "./Icons";
 
 export function ProductDialog() {
   const methods = useForm<ProductFormData>({
@@ -42,14 +45,20 @@ export function ProductDialog() {
   const [selectedtab, setSelectedtab] =
     useState<Product["status"]>("Published");
 
-  const [selectedIcon, setSelectedIcon] = useState<null | ReactNode>(null);
+  const [selectedIcon, setSelectedIcon] = useState<null | ReactNode>(
+    icons.find((icon) => icon.isSelected === true)?.icon
+  );
 
   const [selectedCategory, setSelectedCategory] =
     useState<Product["category"]>("Electronics");
 
+  const { addProduct, isLoading } = useProductStore();
+  const { toast } = useToast();
+  const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
+
   type ProductFormData = z.infer<typeof ProductSchema>;
 
-  const onSubmit = (data: ProductFormData) => {
+  const onSubmit = async (data: ProductFormData) => {
     console.log("Sumitted data:", data);
     const newProduct: Product = {
       id: nanoid(),
@@ -63,7 +72,14 @@ export function ProductDialog() {
       icon: selectedIcon,
       createdAt: new Date(),
     };
-    console.log(newProduct);
+    const result = await addProduct(newProduct);
+    if (result) {
+      toast({
+        title: "Success",
+        description: "Product added successfully",
+      });
+      dialogCloseRef.current?.click();
+    }
   };
 
   function handleReset() {
@@ -117,6 +133,7 @@ export function ProductDialog() {
 
             <DialogFooter className="mt-9 mb-4 flex items-center gap-4">
               <DialogClose
+                ref={dialogCloseRef}
                 onClick={() => {
                   handleReset();
                 }}
@@ -126,7 +143,10 @@ export function ProductDialog() {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button className="h-11 px-11">Add Product</Button>
+
+              <Button className="h-11 px-11">
+                {isLoading ? "loading..." : "Add Product"}
+              </Button>
             </DialogFooter>
           </form>
         </FormProvider>
