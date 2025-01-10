@@ -9,9 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+
 import { useToast } from "@/hooks/use-toast";
 import { useProductStore } from "@/store/useProductStore";
 

@@ -21,7 +21,8 @@ type MenuItem = {
 };
 
 export function ProductDropdown({ row }: { row: Row<Product> }) {
-  const { setSelectedProduct, setOpenDialog } = useProductStore();
+  const { setSelectedProduct, setOpenDialog, setOpenProductDialog } =
+    useProductStore();
   // console.log(row);
 
   const menuItems: MenuItem[] = [
@@ -44,6 +45,10 @@ export function ProductDropdown({ row }: { row: Row<Product> }) {
   function handleClickedItem(item: MenuItem) {
     if (item.label === "Delete") {
       setOpenDialog(true);
+      setSelectedProduct(row.original);
+    }
+    if (item.label === "Edit") {
+      setOpenProductDialog(true);
       setSelectedProduct(row.original);
     }
   }

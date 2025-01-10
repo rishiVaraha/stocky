@@ -13,6 +13,9 @@ interface ProductState {
   loadProducts: () => Promise<void>;
   addProduct: (product: Product) => Promise<{ success: boolean }>;
   deleteProduct: (product: string) => Promise<{ success: boolean }>;
+  openProductDialog: boolean;
+  setOpenProductDialog: (openProductDialog: boolean) => void;
+  updateProduct: (updatedProduct: Product) => Promise<{ success: boolean }>;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -22,6 +25,10 @@ export const useProductStore = create<ProductState>((set) => ({
   openDialog: false,
   setOpenDialog: (openDialog) => {
     set({ openDialog: openDialog });
+  },
+  openProductDialog: false,
+  setOpenProductDialog: (openProductDialog) => {
+    set({ openProductDialog: openProductDialog });
   },
   setSelectedProduct: (product: Product | null) => {
     set({ selectedProduct: product });
@@ -41,6 +48,26 @@ export const useProductStore = create<ProductState>((set) => ({
       return { success: true };
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  updateProduct: async (updatedProduct: Product) => {
+    set({ isLoading: true });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log(updatedProduct);
+
+      set((state) => ({
+        allProducts: state.allProducts.map((product) =>
+          product.id === updatedProduct.id ? updatedProduct : product
+        ),
+      }));
+
+      return { success: true };
+    } finally {
+      set({ isLoading: false });
+      set({ openProductDialog: false });
+      set({ selectedProduct: null });
     }
   },
 

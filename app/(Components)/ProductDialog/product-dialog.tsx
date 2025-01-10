@@ -17,7 +17,7 @@ import { Supplier } from "./_components/supplier";
 import { Quantity } from "./_components/quantity";
 import { Price } from "./_components/price";
 import { ProductName } from "./_components/product-name";
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Product } from "../ProductTable/columns";
 import { FormProvider, useForm } from "react-hook-form";
 import { ProductSchema } from "@/validation/formShema";
@@ -42,7 +42,7 @@ export function ProductDialog() {
 
   const { reset } = methods;
 
-  const [selectedtab, setSelectedtab] =
+  const [selectedTab, setSelectedTab] =
     useState<Product["status"]>("Published");
 
   const [selectedIcon, setSelectedIcon] = useState<null | ReactNode>(
@@ -52,38 +52,101 @@ export function ProductDialog() {
   const [selectedCategory, setSelectedCategory] =
     useState<Product["category"]>("Electronics");
 
-  const { addProduct, isLoading } = useProductStore();
+  const {
+    addProduct,
+    isLoading,
+    openProductDialog,
+    setOpenProductDialog,
+    setSelectedProduct,
+    selectedProduct,
+    updateProduct,
+  } = useProductStore();
   const { toast } = useToast();
+
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      // * Update form with selectedProduct details when dialog opens
+      reset({
+        productName: selectedProduct.name,
+        sku: selectedProduct.sku,
+        supplier: selectedProduct.supplier,
+        quantity: selectedProduct.quantityInStock,
+        price: selectedProduct.price,
+      });
+      setSelectedTab(selectedProduct.status);
+      setSelectedCategory(selectedProduct.category);
+      setSelectedIcon(selectedProduct.icon);
+    } else {
+      // * Reset form values if no selectedProduct
+      reset({
+        productName: "",
+        sku: "",
+        supplier: "",
+        quantity: 0,
+        price: 0.0,
+      });
+      setSelectedTab("Published");
+      setSelectedCategory("Electronics");
+    }
+  }, [openProductDialog, reset, selectedProduct]);
 
   type ProductFormData = z.infer<typeof ProductSchema>;
 
   const onSubmit = async (data: ProductFormData) => {
-    console.log("Sumitted data:", data);
-    const newProduct: Product = {
-      id: nanoid(),
-      supplier: data.supplier,
-      name: data.productName,
-      price: data.price,
-      quantityInStock: data.quantity,
-      sku: data.sku,
-      status: selectedtab,
-      category: selectedCategory,
-      icon: selectedIcon,
-      createdAt: new Date(),
-    };
-    const result = await addProduct(newProduct);
-    if (result) {
-      toast({
-        title: "Success",
-        description: "Product added successfully",
-      });
-      dialogCloseRef.current?.click();
+    if (!selectedProduct) {
+      const newProduct: Product = {
+        id: nanoid(),
+        supplier: data.supplier,
+        name: data.productName,
+        price: data.price,
+        quantityInStock: data.quantity,
+        sku: data.sku,
+        status: selectedTab,
+        category: selectedCategory,
+        icon: selectedIcon,
+        createdAt: new Date(),
+      };
+      const result = await addProduct(newProduct);
+      if (result) {
+        toast({
+          title: "Success",
+          description: "Product added successfully",
+        });
+        dialogCloseRef.current?.click();
+      }
+    } else {
+      const productToUpdate: Product = {
+        id: selectedProduct.id,
+        createdAt: selectedProduct.createdAt,
+        name: data.productName,
+        supplier: data.supplier,
+        price: data.price,
+        quantityInStock: data.quantity,
+        sku: data.sku,
+        status: selectedTab,
+        category: selectedCategory,
+        icon: selectedIcon,
+      };
+      const result = await updateProduct(productToUpdate);
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Product update successfully!",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong while updating the product.",
+        });
+      }
     }
   };
 
   function handleReset() {
     reset();
+    setSelectedProduct(null);
   }
 
   function onSelectedIcon(icon: ReactNode) {
@@ -94,7 +157,7 @@ export function ProductDialog() {
     }, 0);
   }
   return (
-    <Dialog>
+    <Dialog open={openProductDialog} onOpenChange={setOpenProductDialog}>
       <DialogTrigger asChild>
         <Button className="h-10">Add Product</Button>
       </DialogTrigger>
@@ -123,8 +186,8 @@ export function ProductDialog() {
               </div>
               <div className="grid grid-cols-3 gap-2 items-baseline">
                 <Status
-                  selectedTab={selectedtab}
-                  setSelectedTab={setSelectedtab}
+                  selectedTab={selectedTab}
+                  setSelectedTab={setSelectedTab}
                 />
                 <Quantity />
                 <Price />

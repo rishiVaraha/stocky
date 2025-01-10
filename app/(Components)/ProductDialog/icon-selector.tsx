@@ -228,7 +228,7 @@ export function IconSelector({
       if (iconToSelected) {
         triggerIconSelection(iconToSelected);
       }
-    }, [iconToSelected]);
+    }, [iconToSelected, triggerIconSelection]);
 
     return (
       <>

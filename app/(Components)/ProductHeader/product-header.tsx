@@ -12,7 +12,7 @@ export function DataTable() {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [loadProducts]);
 
   return (
     <Card className="mt-12 flex flex-col shadow-none border-none">
